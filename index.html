@@ -1,128 +1,181 @@
-<section id="plans" class="py-16 bg-[#2b1f38]">
-  <h2 class="text-4xl font-bold text-center text-[#D4AF37] mb-12">Plans & Pricing</h2>
-  <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-8 px-6">
+<!-- Video Creation Tool -->
+<section id="video-tool" class="py-16 bg-[#2b1f38]">
+  <div class="max-w-6xl mx-auto px-6">
+    <h2 class="text-4xl font-bold text-center text-[#D4AF37] mb-12">Video Creation Tool</h2>
 
-    <!-- Entry Plan -->
-    <div class="bg-[#3D2C41] p-6 rounded-xl text-center shadow-lg hover:scale-[1.03] transition">
-      <h3 class="text-2xl font-bold mb-2">Entry</h3>
-      <p class="mb-4">$19 – Free plan users can generate <span class="font-semibold">1 video up to 6 seconds</span></p>
-      <p class="text-gray-300 text-sm mb-4">
-        Perfect for first-time creators. Generate a short, high-quality cinematic video to test the power of Kairah Studio. Features included:
-        <ul class="text-left list-disc list-inside mt-2">
-          <li>Text-to-video AI generation</li>
-          <li>Photo-to-video transformation</li>
-          <li>Access to trending templates & basic face swap</li>
-          <li>Limited AI voice customization</li>
-        </ul>
-      </p>
-      <button onclick="openPaymentModal('Entry')" class="btn mb-2 block">Choose Entry</button>
+    <!-- Prompt Input -->
+    <div class="mb-6">
+      <label class="block text-lg font-semibold mb-2">Enter Your Prompt</label>
+      <textarea id="prompt-input" class="w-full p-4 rounded-lg bg-[#3D2C41] text-white" rows="3" placeholder="Describe your scene..."></textarea>
+      <div class="flex flex-wrap mt-2 gap-2">
+        <button onclick="setPrompt('Funny')" class="btn">Funny</button>
+        <button onclick="setPrompt('Cinematic')" class="btn">Cinematic</button>
+        <button onclick="setPrompt('Fantasy')" class="btn">Fantasy</button>
+        <button onclick="refinePrompt()" class="btn">Prompt Magic</button>
+      </div>
     </div>
 
-    <!-- Pro Plan -->
-    <div class="bg-[#3D2C41] p-6 rounded-xl text-center shadow-lg hover:scale-[1.03] transition">
-      <h3 class="text-2xl font-bold mb-2">Pro</h3>
-      <p class="mb-4">$49/month – Ideal for regular creators</p>
-      <p class="text-gray-300 text-sm mb-4">
-        Unlock full-length videos, higher resolutions, and advanced features. Includes:
-        <ul class="text-left list-disc list-inside mt-2">
-          <li>Unlimited text-to-video generation</li>
-          <li>Photo-to-video with multi-scene AI</li>
-          <li>Face swap & viral template access</li>
-          <li>Custom AI voices with multiple languages</li>
-          <li>Priority generation speed</li>
-        </ul>
-      </p>
-      <button onclick="openPaymentModal('Pro')" class="btn mb-2 block">Choose Pro</button>
+    <!-- Upload Photos -->
+    <div class="mb-6">
+      <label class="block text-lg font-semibold mb-2">Upload Photos (Photo-to-Video)</label>
+      <input type="file" id="photo-upload" class="w-full p-2 rounded-lg bg-[#3D2C41] text-white" multiple accept="image/png, image/jpeg">
     </div>
 
-    <!-- Diamond Plan -->
-    <div class="bg-[#3D2C41] p-6 rounded-xl text-center shadow-lg hover:scale-[1.03] transition">
-      <h3 class="text-2xl font-bold mb-2">Diamond</h3>
-      <p class="mb-4">$449/year – For power users & professionals</p>
-      <p class="text-gray-300 text-sm mb-4">
-        Complete creative freedom. Everything in Pro, plus:
-        <ul class="text-left list-disc list-inside mt-2">
-          <li>Priority AI model access (Hyper-realistic, Cinematic, Fantasy)</li>
-          <li>Commercial usage rights</li>
-          <li>Advanced effects, filters, and scene optimization</li>
-          <li>Extended video length: 3 minutes max</li>
-          <li>Dedicated support</li>
-        </ul>
-      </p>
-      <button onclick="openPaymentModal('Diamond')" class="btn mb-2 block">Choose Diamond</button>
+    <!-- Video Options -->
+    <div class="mb-6 grid md:grid-cols-3 gap-4">
+      <div>
+        <label class="block font-semibold mb-1">Model</label>
+        <select id="model-select" class="w-full p-2 rounded-lg bg-[#3D2C41] text-white">
+          <option>Hyper-realistic</option>
+          <option>Cinematic</option>
+          <option>Fantasy</option>
+        </select>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Resolution</label>
+        <select id="resolution-select" class="w-full p-2 rounded-lg bg-[#3D2C41] text-white">
+          <option>720p</option>
+          <option>1080p</option>
+          <option>4K</option>
+        </select>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Length</label>
+        <select id="length-select" class="w-full p-2 rounded-lg bg-[#3D2C41] text-white">
+          <option>6 sec (Free)</option>
+          <option>30 sec</option>
+          <option>1 min</option>
+        </select>
+      </div>
     </div>
 
-    <!-- Lifetime Plan -->
-    <div class="bg-[#3D2C41] p-6 rounded-xl text-center shadow-lg hover:scale-[1.03] transition">
-      <h3 class="text-2xl font-bold mb-2">Lifetime</h3>
-      <p class="mb-4">$1,400 – Full access forever</p>
-      <p class="text-gray-300 text-sm mb-4">
-        For creators who demand the ultimate. Includes everything from Diamond, forever:
-        <ul class="text-left list-disc list-inside mt-2">
-          <li>Unlimited video generation & downloads</li>
-          <li>All AI models unlocked, full resolution</li>
-          <li>Commercial & redistribution rights</li>
-          <li>VIP support & priority updates</li>
-          <li>Exclusive early access to new features</li>
-        </ul>
-      </p>
-      <button onclick="openPaymentModal('Lifetime')" class="btn mb-2 block">Choose Lifetime</button>
+    <!-- Generate / Clear Buttons -->
+    <div class="flex flex-wrap gap-4 mb-6">
+      <button onclick="generateVideo()" class="btn">Generate Video</button>
+      <button onclick="clearVideo()" class="btn bg-red-600 hover:bg-red-700">Clear / Reset</button>
     </div>
 
+    <!-- Loading & Video Preview -->
+    <div id="video-preview" class="mt-6 text-center">
+      <p id="loading-text" class="mb-2 hidden">Generating your video, please wait...</p>
+      <video id="generated-video" class="mx-auto rounded-lg shadow-lg" controls style="max-width:100%; display:none;"></video>
+      <div class="mt-2">
+        <button id="regenerate-btn" class="btn mb-2 hidden" onclick="generateVideo()">Regenerate</button>
+        <button id="download-btn" class="btn mb-2 hidden">Download</button>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- Payment Modal (hidden by default) -->
-<div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center hidden z-50">
-  <div class="bg-[#3D2C41] p-8 rounded-xl max-w-md w-full">
-    <h3 class="text-2xl font-bold mb-4 text-center text-[#D4AF37]" id="modal-plan-name"></h3>
-    <div class="space-y-3">
-      <a href="#" id="modal-paypal" target="_blank" class="flex items-center justify-center gap-3 btn w-full"><img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" class="h-6"> PayPal</a>
-      <a href="#" id="modal-paystack" target="_blank" class="flex items-center justify-center gap-3 btn w-full"><img src="https://seeklogo.com/images/P/paystack-logo-1B9F0FA120-seeklogo.com.png" class="h-6"> Paystack</a>
-      <button id="modal-mpesa" class="flex items-center justify-center gap-3 btn w-full"><img src="https://upload.wikimedia.org/wikipedia/commons/3/32/M-PESA_Logo.png" class="h-6"> M-Pesa</button>
-      <div class="flex justify-around mt-4">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" class="h-6">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/Visa_2014_logo_detail.svg" class="h-6">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/Amex_logo.png" class="h-6">
-      </div>
+<!-- Testimonials Section -->
+<section id="testimonials" class="py-16 bg-gradient-to-b from-[#3D2C41] to-[#1a1424]">
+  <h2 class="text-4xl font-bold text-center text-[#D4AF37] mb-12">Testimonials</h2>
+  <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8 px-6">
+    <div class="bg-[#3D2C41] p-6 rounded-xl shadow-lg text-center">
+      <p class="mb-4 italic">"Kairah Studio transformed my ideas into cinematic videos in seconds! The AI is incredibly intuitive and creative."</p>
+      <h4 class="font-bold">– Aisha M.</h4>
     </div>
-    <button onclick="closePaymentModal()" class="mt-4 btn w-full">Close</button>
+    <div class="bg-[#3D2C41] p-6 rounded-xl shadow-lg text-center">
+      <p class="mb-4 italic">"I never imagined creating high-quality videos could be this easy. The templates and AI models are amazing."</p>
+      <h4 class="font-bold">– David K.</h4>
+    </div>
+    <div class="bg-[#3D2C41] p-6 rounded-xl shadow-lg text-center">
+      <p class="mb-4 italic">"From text to full videos, Kairah Studio is a game-changer for content creators. Truly next-level."</p>
+      <h4 class="font-bold">– Selina R.</h4>
+    </div>
   </div>
-</div>
+</section>
 
 <script>
-function openPaymentModal(plan) {
-  document.getElementById('payment-modal').classList.remove('hidden');
-  document.getElementById('modal-plan-name').innerText = plan + " Plan";
-  
-  // Set links dynamically
-  if(plan === 'Entry') {
-    document.getElementById('modal-paypal').href = "https://www.paypal.com/ncp/payment/2X583XDXBYUPN";
-    document.getElementById('modal-paystack').href = "https://paystack.shop/pay/ge2324r8fu";
-    document.getElementById('modal-mpesa').onclick = () => { copyMpesainfo('0113554446','Entry') };
-  } else if(plan === 'Pro') {
-    document.getElementById('modal-paypal').href = "https://www.paypal.com/ncp/payment/DVSZY7GB2QCYW";
-    document.getElementById('modal-paystack').href = "https://paystack.shop/pay/uli4nrj8xq";
-    document.getElementById('modal-mpesa').onclick = () => { copyMpesainfo('0113554446','Pro') };
-  } else if(plan === 'Diamond') {
-    document.getElementById('modal-paypal').href = "https://www.paypal.com/ncp/payment/S77ESJWSU79JU";
-    document.getElementById('modal-paystack').href = "https://paystack.shop/pay/4u6jdu7eft";
-    document.getElementById('modal-mpesa').onclick = () => { copyMpesainfo('0113554446','Diamond') };
-  } else if(plan === 'Lifetime') {
-    document.getElementById('modal-paypal').href = "https://www.paypal.com/ncp/payment/K4Y9SVNW76XYU";
-    document.getElementById('modal-paystack').href = "https://paystack.shop/pay/-cdm6oobkz";
-    document.getElementById('modal-mpesa').onclick = () => { copyMpesainfo('0113554446','Lifetime') };
+  // Example JS functions for prompts & video generation
+  function setPrompt(category){
+    document.getElementById('prompt-input').value = category + ' prompt example...';
+  }
+  function refinePrompt(){
+    const input = document.getElementById('prompt-input');
+    input.value = "Refined: " + input.value;
+  }
+  function generateVideo(){
+    document.getElementById('loading-text').classList.remove('hidden');
+    setTimeout(() => {
+      document.getElementById('loading-text').classList.add('hidden');
+      const video = document.getElementById('generated-video');
+      video.src = "https://streamable.com/e/6psp7n"; // Example, replace with real AI model output
+      video.style.display = "block";
+      document.getElementById('regenerate-btn').classList.remove('hidden');
+      document.getElementById('download-btn').classList.remove('hidden');
+    }, 2000);
+  }
+  function clearVideo(){
+    document.getElementById('generated-video').style.display = "none";
+    document.getElementById('regenerate-btn').classList.add('hidden');
+    document.getElementById('download-btn').classList.add('hidden');
+    document.getElementById('prompt-input').value = '';
+    document.getElementById('photo-upload').value = '';
+  }
+</script>
+<script>
+async function generateVideo() {
+  const prompt = document.getElementById('prompt-input').value;
+  const photos = document.getElementById('photo-upload').files;
+  const model = document.getElementById('model-select').value;
+  const resolution = document.getElementById('resolution-select').value;
+  const length = document.getElementById('length-select').value;
+
+  if(!prompt && photos.length === 0) {
+    alert('Please enter a prompt or upload photos.');
+    return;
+  }
+
+  document.getElementById('loading-text').classList.remove('hidden');
+  document.getElementById('generated-video').style.display = 'none';
+
+  try {
+    // Example: calling RunDiffusion / AI backend
+    const formData = new FormData();
+    formData.append('prompt', prompt);
+    formData.append('model', model);
+    formData.append('resolution', resolution);
+    formData.append('length', length);
+
+    for(let i=0; i<photos.length; i++){
+      formData.append('photos', photos[i]);
+    }
+
+    const response = await fetch('https://your-backend-endpoint.com/generate', {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if(data.videoUrl){
+      const video = document.getElementById('generated-video');
+      video.src = data.videoUrl; // URL returned by AI backend
+      video.style.display = 'block';
+      document.getElementById('regenerate-btn').classList.remove('hidden');
+      document.getElementById('download-btn').classList.remove('hidden');
+    } else {
+      alert('Video generation failed. Please try again.');
+    }
+  } catch(err) {
+    console.error(err);
+    alert('Error generating video. Check console for details.');
+  } finally {
+    document.getElementById('loading-text').classList.add('hidden');
   }
 }
-
-function closePaymentModal() {
-  document.getElementById('payment-modal').classList.add('hidden');
-}
-
-// Copy M-Pesa info
-function copyMpesainfo(phone, plan){
-  navigator.clipboard.writeText(`Pay ${plan} plan to M-Pesa number: ${phone}`).then(() => {
-    alert(`M-Pesa info copied for ${plan} plan!`);
-  });
-}
 </script>
+document.getElementById('download-btn').addEventListener('click', () => {
+  // Check user plan
+  const userPlan = 'Free'; // get from Firebase auth
+  if(userPlan === 'Free'){
+    alert('Upgrade to download full videos.');
+  } else {
+    const video = document.getElementById('generated-video');
+    const a = document.createElement('a');
+    a.href = video.src;
+    a.download = 'kairah-video.mp4';
+    a.click();
+  }
+});
