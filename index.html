@@ -1,99 +1,87 @@
-<!-- Header -->
-<header class="text-center py-6">
-  <h1 class="text-4xl md:text-5xl font-bold text-[#D4AF37]">
-    Kairah Studio
-  </h1>
-</header>
-
-<!-- Hero Section -->
-<section class="text-center py-16 bg-gradient-to-b from-[#3D2C41] to-[#1a1424]">
-  <h2 class="text-5xl md:text-6xl font-bold text-[#D4AF37] mb-4">
-    Create AI-Powered Cinematic Worlds
-  </h2>
-  <p class="text-xl md:text-2xl mb-4">
-    Bring your imagination to life with AI. Transform text or photos into stunning videos.
-  </p>
-  <a href="#signup" class="btn mt-4 text-lg">Start Creating / Sign In</a>
+<section id="signup" class="py-16 max-w-md mx-auto px-6">
+  <h2 class="text-3xl font-bold text-center text-[#D4AF37] mb-8">Sign Up / Login</h2>
+  <div class="bg-[#3D2C41] p-8 rounded-xl shadow-lg">
+    <input type="email" id="email" placeholder="Email" class="w-full p-3 mb-4 rounded text-black">
+    <input type="password" id="password" placeholder="Password" class="w-full p-3 mb-4 rounded text-black">
+    <button id="signup-btn" class="btn w-full mb-2">Sign Up</button>
+    <button id="login-btn" class="btn w-full mb-2">Login</button>
+    <button id="google-login" class="btn w-full mb-2">Sign In with Google</button>
+    <p class="mt-2 text-sm text-center text-[#D4AF37]">Forgot password? <a href="#">Reset here</a></p>
+    <p class="mt-2 text-sm text-center text-[#ff4d6d]">Support: keishapoa@gmail.com</p>
+  </div>
 </section>
+<!-- Place this at the bottom, just before </body> -->
 <script>
-  // Your Firebase Config
-  const firebaseConfig = {
-    apiKey: "AIzaSyAGlNOCAwsgeDnSJtBux2uIMuP0p_jBJns",
-    authDomain: "kairah-studio.firebaseapp.com",
-    projectId: "kairah-studio",
-    storageBucket: "kairah-studio.appspot.com",
-    messagingSenderId: "145122424961",
-    appId: "1:145122424961:web:31156e5b0f185d7c503580",
-    measurementId: "G-X4VGPQSNGD"
-  };
+  document.addEventListener("DOMContentLoaded", () => {
+    // Your Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAGlNOCAwsgeDnSJtBux2uIMuP0p_jBJns",
+      authDomain: "kairah-studio.firebaseapp.com",
+      projectId: "kairah-studio",
+      storageBucket: "kairah-studio.appspot.com",
+      messagingSenderId: "145122424961",
+      appId: "1:145122424961:web:31156e5b0f185d7c503580",
+      measurementId: "G-X4VGPQSNGD"
+    };
 
-  // Initialize Firebase (Compat Version)
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
-  const auth = firebase.auth();
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
 
-  // SIGN UP
-  document.getElementById("signup-btn").addEventListener("click", () => {
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
+    // SIGN UP
+    const signupBtn = document.getElementById("signup-btn");
+    if(signupBtn) {
+      signupBtn.addEventListener("click", () => {
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+        if (!email || !password) return alert("❌ Please enter email and password.");
 
-    if (!email || !password) {
-      alert("❌ Please enter email and password.");
-      return;
+        auth.createUserWithEmailAndPassword(email, password)
+          .then(userCredential => {
+            userCredential.user.sendEmailVerification()
+              .then(() => alert("✅ Account created! Check your email for verification."));
+          })
+          .catch(error => alert("❌ " + error.message));
+      });
     }
 
-    auth.createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        userCredential.user.sendEmailVerification()
+    // LOGIN
+    const loginBtn = document.getElementById("login-btn");
+    if(loginBtn) {
+      loginBtn.addEventListener("click", () => {
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+        if (!email || !password) return alert("❌ Please enter email and password.");
+
+        auth.signInWithEmailAndPassword(email, password)
+          .then(userCredential => {
+            const user = userCredential.user;
+            if (!user.emailVerified) {
+              alert("⚠️ Verify your email first!");
+              auth.signOut();
+              return;
+            }
+            alert("✅ Login successful! Redirecting...");
+            window.location.href = "#video-tool";
+          })
+          .catch(error => alert("❌ " + error.message));
+      });
+    }
+
+    // GOOGLE LOGIN
+    const googleLogin = document.getElementById("google-login");
+    if(googleLogin) {
+      googleLogin.addEventListener("click", () => {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider)
           .then(() => {
-            alert("✅ Account created! Check your email for verification.");
-            document.getElementById("email").value = "";
-            document.getElementById("password").value = "";
-          });
-      })
-      .catch((error) => {
-        alert("❌ " + error.message);
+            alert("✅ Signed in with Google!");
+            window.location.href = "#video-tool";
+          })
+          .catch(error => alert("❌ " + error.message));
       });
-  });
-
-  // LOGIN
-  document.getElementById("login-btn").addEventListener("click", () => {
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-
-    if (!email || !password) {
-      alert("❌ Please enter email and password.");
-      return;
     }
-
-    auth.signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        if (!user.emailVerified) {
-          alert("⚠️ Please verify your email before accessing Kairah Studio.");
-          auth.signOut();
-          return;
-        }
-
-        alert("✅ Login Successful. Redirecting...");
-        window.location.href = "#video-tool"; // jump to video tool section
-      })
-      .catch((error) => {
-        alert("❌ " + error.message);
-      });
-  });
-
-  // GOOGLE LOGIN
-  document.getElementById("google-login").addEventListener("click", () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider)
-      .then((result) => {
-        alert("✅ Signed in with Google!");
-        window.location.href = "#video-tool";
-      })
-      .catch((error) => {
-        alert("❌ " + error.message);
-      });
   });
 </script>
