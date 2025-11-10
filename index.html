@@ -152,3 +152,148 @@
       });
   });
 </script>
+<body>
+<!-- Video Creation Tool -->
+<section id="video-tool" class="py-16 bg-[#2b1f38]">
+  <div class="max-w-6xl mx-auto px-6">
+    <h2 class="text-4xl font-bold text-center text-[#D4AF37] mb-12">Video Creation Tool</h2>
+
+    <!-- Prompt Input -->
+    <div class="mb-6">
+      <label class="block text-lg font-semibold mb-2">Enter Your Prompt</label>
+      <textarea id="prompt-input" class="w-full p-4 rounded-lg bg-[#3D2C41] text-white" rows="3" placeholder="Describe your scene..."></textarea>
+      <div class="flex flex-wrap mt-2 gap-2">
+        <button onclick="setPrompt('Funny')" class="btn">Funny</button>
+        <button onclick="setPrompt('Cinematic')" class="btn">Cinematic</button>
+        <button onclick="setPrompt('Fantasy')" class="btn">Fantasy</button>
+        <button onclick="refinePrompt()" class="btn">Prompt Magic</button>
+      </div>
+    </div>
+
+    <!-- Upload Photos -->
+    <div class="mb-6">
+      <label class="block text-lg font-semibold mb-2">Upload Photos (Photo-to-Video)</label>
+      <input type="file" id="photo-upload" class="w-full p-2 rounded-lg bg-[#3D2C41] text-white" multiple accept="image/png, image/jpeg">
+    </div>
+
+    <!-- Video Options -->
+    <div class="mb-6 grid md:grid-cols-3 gap-4">
+      <div>
+        <label class="block font-semibold mb-1">Model</label>
+        <select id="model-select" class="w-full p-2 rounded-lg bg-[#3D2C41] text-white">
+          <option>Hyper-realistic</option>
+          <option>Cinematic</option>
+          <option>Fantasy</option>
+        </select>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Resolution</label>
+        <select id="resolution-select" class="w-full p-2 rounded-lg bg-[#3D2C41] text-white">
+          <option>720p</option>
+          <option>1080p</option>
+          <option>4K</option>
+        </select>
+      </div>
+      <div>
+        <label class="block font-semibold mb-1">Length</label>
+        <select id="length-select" class="w-full p-2 rounded-lg bg-[#3D2C41] text-white">
+          <option>6 sec (Free)</option>
+          <option>30 sec</option>
+          <option>1 min</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Generate / Clear Buttons -->
+    <div class="flex flex-wrap gap-4 mb-6">
+      <button onclick="generateVideo()" class="btn">Generate Video</button>
+      <button onclick="clearVideo()" class="btn bg-red-600 hover:bg-red-700">Clear / Reset</button>
+    </div>
+
+    <!-- Loading & Video Preview -->
+    <div id="video-preview" class="mt-6 text-center">
+      <p id="loading-text" class="mb-2 hidden">Generating your video, please wait...</p>
+      <video id="generated-video" class="mx-auto rounded-lg shadow-lg" controls style="max-width:100%; display:none;"></video>
+      <div class="mt-2">
+        <button id="regenerate-btn" class="btn mb-2 hidden" onclick="generateVideo()">Regenerate</button>
+        <button id="download-btn" class="btn mb-2 hidden">Download</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ======= Example Prompt Functions =======
+  function setPrompt(category){
+    document.getElementById('prompt-input').value = category + ' prompt example...';
+  }
+  function refinePrompt(){
+    const input = document.getElementById('prompt-input');
+    input.value = "Refined: " + input.value;
+  }
+
+  // ======= Plan & User Simulation =======
+  // Replace with Firebase Auth plan check
+  let currentUserPlan = 'free'; // 'free' | 'pro' | 'diamond'
+
+  function checkPlan(length){
+    if(currentUserPlan === 'free' && length !== '6 sec (Free)'){
+      alert("Upgrade to generate longer videos!");
+      return false;
+    }
+    return true;
+  }
+
+  // ======= Video Generation =======
+  async function generateVideo() {
+    const prompt = document.getElementById('prompt-input').value;
+    const photos = document.getElementById('photo-upload').files;
+    const model = document.getElementById('model-select').value;
+    const resolution = document.getElementById('resolution-select').value;
+    const length = document.getElementById('length-select').value;
+
+    if(!prompt && photos.length === 0) {
+      alert('Please enter a prompt or upload photos.');
+      return;
+    }
+
+    if(!checkPlan(length)) return;
+
+    document.getElementById('loading-text').classList.remove('hidden');
+    document.getElementById('generated-video').style.display = 'none';
+
+    try {
+      // ======== Placeholder Backend Integration ========
+      // Replace this with real API call to RunDiffusion / D-ID / Cloudinary
+      await new Promise(r => setTimeout(r, 2000)); // simulate generation delay
+
+      let videoUrl = "https://streamable.com/e/6psp7n"; // demo video
+      // Apply watermark if free user
+      if(currentUserPlan === 'free'){
+        // This is just a placeholder — real watermark needs backend overlay
+        videoUrl += "?watermark=true"; 
+      }
+
+      const video = document.getElementById('generated-video');
+      video.src = videoUrl;
+      video.style.display = "block";
+      document.getElementById('regenerate-btn').classList.remove('hidden');
+      document.getElementById('download-btn').classList.remove('hidden');
+
+    } catch(err) {
+      console.error(err);
+      alert('Error generating video. Check console for details.');
+    } finally {
+      document.getElementById('loading-text').classList.add('hidden');
+    }
+  }
+
+  // ======= Clear / Reset =======
+  function clearVideo(){
+    document.getElementById('generated-video').style.display = "none";
+    document.getElementById('regenerate-btn').classList.add('hidden');
+    document.getElementById('download-btn').classList.add('hidden');
+    document.getElementById('prompt-input').value = '';
+    document.getElementById('photo-upload').value = '';
+  }
+</script>
